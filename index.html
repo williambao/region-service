@@ -1,0 +1,65 @@
+﻿<!Doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>行政区列表</title>
+    </head>
+    <body>
+        <div style="margin-left: 100px;margin-top:100px;">
+            <div>
+                省:
+                <select id="province"></select>
+            </div>
+            <div>
+                市:
+                <select id="city"></select>
+            </div>
+            <div>
+                县/区:
+                <select id="area"></select>
+            </div>
+        </div>
+        <script src="jquery-1.11.0.min.js"></script>
+        <script src="RegionService.js"></script>
+        <script>
+            $(function () {
+                $("#province").on("change", getCity);
+                $("#city").on("change", getAreas);
+                initProvince();
+            });
+
+            function initProvince() {
+                var _instance = new RegionService();
+                var _list = _instance.getProvinces();
+                $.each(_list, function (index, item) {
+                    var _html = "<option value='" + item.code + "'>" + item.name + "</option>";
+                    $("#province").append(_html);
+                });
+                $("#province").trigger("change");
+            }
+            function getCity() {
+                var _province = $("#province").val();
+                var _instance = new RegionService();
+                var _list = _instance.getCities(_province);
+                $("#city").html('');
+                $("#area").html('');
+                $.each(_list, function (index, item) {
+                    var _html = "<option value='" + item.code + "'>" + item.name + "</option>";
+                    $("#city").append(_html);
+                });
+                $("#city").trigger("change");
+            }
+            function getAreas() {
+                var _province = $("#province").val();
+                var _city = $("#city").val();
+                var _instance = new RegionService();
+                var _list = _instance.getAreas(_province, _city);
+                $("#area").html('');
+                $.each(_list, function (index, item) {
+                    var _html = "<option value='" + item.code + "'>" + item.name + "</option>";
+                    $("#area").append(_html);
+                });
+            }
+        </script>
+    </body>
+</html>
